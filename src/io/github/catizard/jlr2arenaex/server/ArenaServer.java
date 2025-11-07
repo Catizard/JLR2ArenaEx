@@ -87,6 +87,10 @@ public class ArenaServer extends WebSocketServer {
 		Logger.getGlobal().info("[+] Server stopped");
 	}
 
+	public void setAutoRotateHost(boolean autoRotateHost) {
+		this.autoRotateHost = autoRotateHost;
+	}
+
 	private void parsePacket(Address clientAddress, ByteBuffer bytes) throws IOException {
 		char id = (char) bytes.get();
 		ClientToServer ev = ClientToServer.from(id);
