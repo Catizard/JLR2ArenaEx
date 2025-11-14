@@ -96,7 +96,6 @@ public class ArenaServer extends WebSocketServer {
 		ClientToServer ev = ClientToServer.from(id);
 		byte[] data = new byte[bytes.remaining()];
 		bytes.get(data, 0, data.length);
-		Logger.getGlobal().info("Received: " + new String(data));
 		// NOTE: If data is not representing an object, data in value object is the first byte of data array
 		// In that case, don't use value object, see CTS_USERNAME for example
 		Value value = null;
