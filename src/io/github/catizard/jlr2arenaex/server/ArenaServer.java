@@ -15,11 +15,13 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class ArenaServer extends WebSocketServer {
 	private volatile boolean started = false;
 	private volatile boolean autoRotateHost = false;
+	private Consumer<Exception> exceptionHandler;
 	public static ServerState state = new ServerState();
 
 	public ArenaServer() {
@@ -28,6 +30,10 @@ public class ArenaServer extends WebSocketServer {
 
 	public ArenaServer(int port) {
 		super(new InetSocketAddress(port));
+	}
+
+	public void setExceptionHandler(Consumer<Exception> exceptionHandler) {
+		this.exceptionHandler = exceptionHandler;
 	}
 
 	@Override
@@ -70,7 +76,9 @@ public class ArenaServer extends WebSocketServer {
 
 	@Override
 	public void onError(WebSocket conn, Exception e) {
-		e.printStackTrace();
+		if (exceptionHandler != null) {
+			exceptionHandler.accept(e);
+		}
 	}
 
 	@Override
