@@ -157,8 +157,14 @@ public class ArenaServer extends WebSocketServer {
 				broadcast(ServerToClient.STC_USERLIST, state.getPeerList().pack());
 			}
 			case CTS_MESSAGE -> broadcast(ServerToClient.STC_MESSAGE, bytes.array(), clientAddress);
-			case CTS_MISSING_CHART ->
-					broadcast(ServerToClient.STC_MESSAGE, String.format("[!] %s is missing the selected chart!", state.getPeers().get(clientAddress).getUserName()).getBytes());
+			case CTS_MISSING_CHART -> {
+				Message message = new Message(
+						String.format("[!] %s is missing the selected chart!", state.getPeers().get(clientAddress).getUserName()),
+						clientAddress,
+						true
+				);
+				broadcast(ServerToClient.STC_MESSAGE, message.pack());
+			}
 			case CTS_SET_HOST -> {
 				if (!clientAddress.equals(state.getHost())) {
 					return;
