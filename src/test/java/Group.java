@@ -1,4 +1,10 @@
+import io.github.catizard.jlr2arenaex.enums.ClientToServer;
+import io.github.catizard.jlr2arenaex.network.Score;
+import io.github.catizard.jlr2arenaex.network.ScoreMessage;
+import io.github.catizard.jlr2arenaex.network.SelectedBMSMessage;
+
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +61,28 @@ public class Group {
 				}
 			}
 			this.guests.add(guest);
+		}
+	}
+
+	public void pickSongByHost(SelectedBMSMessage selectedBMSMessage) {
+		host.send(ClientToServer.CTS_SELECTED_BMS, selectedBMSMessage.pack());
+		host.send(ClientToServer.CTS_LOADING_COMPLETE, "".getBytes());
+	}
+
+	public void pickSongByGuest(SelectedBMSMessage selectedBMSMessage) {
+		for (Client guest : guests) {
+			guest.send(ClientToServer.CTS_SELECTED_BMS, selectedBMSMessage.pack());
+			guest.send(ClientToServer.CTS_LOADING_COMPLETE, "".getBytes());
+		}
+	}
+
+	public void updateScoreByHost(Score score) {
+		host.send(ClientToServer.CTS_PLAYER_SCORE, score.pack());
+	}
+
+	public void updateScoreByGuest(Score score) {
+		for (Client guest : guests) {
+			guest.send(ClientToServer.CTS_PLAYER_SCORE, score.pack());
 		}
 	}
 

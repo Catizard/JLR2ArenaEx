@@ -1,8 +1,6 @@
 import io.github.catizard.jlr2arenaex.enums.ClientToServer;
 import io.github.catizard.jlr2arenaex.enums.ServerToClient;
-import io.github.catizard.jlr2arenaex.network.Address;
-import io.github.catizard.jlr2arenaex.network.PackUtil;
-import io.github.catizard.jlr2arenaex.network.PeerList;
+import io.github.catizard.jlr2arenaex.network.*;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.msgpack.core.MessagePack;
@@ -110,16 +108,19 @@ public class Client extends WebSocketClient {
 				matched = false;
 				logger.error("[{}-{}<>{}] message mismatched: \n- {}\n- {}",
 						i, this.getFullName(), client.getFullName(),
-						this.messages.get(i), selfMessage);
+						selfMessage, rhsMessage);
 			}
 		}
+		boolean selfRemaining = this.messages.size() > client.messages.size();
 		List<Message<?>> remainingMessages = this.messages.size() > minSize
 				? this.messages.subList(minSize, this.messages.size())
 				: client.messages.subList(minSize, client.messages.size());
 		for (int i = 0; i < remainingMessages.size(); ++i) {
 			matched = false;
-			logger.error("[{}-{}] extra message received: {}",
-					i + minSize, this.messages.size() > minSize ? this.getFullName() : client.getFullName(),
+			logger.error("[{}-{}>{}] extra message received: {}",
+					i + minSize,
+					selfRemaining ? this.getFullName() : client.getFullName(),
+					selfRemaining ? client.getFullName() : this.getFullName(),
 					remainingMessages.get(i));
 		}
 		return matched;
@@ -144,9 +145,9 @@ public class Client extends WebSocketClient {
 				}
 				messages.add(new Message<>(ev, new Address(value), data));
 			}
-			case STC_USERLIST -> {
-				messages.add(new Message<>(ev, new PeerList(value), data));
-			}
+			case STC_USERLIST, STC_PLAYERS_READY_UPDATE -> messages.add(new Message<>(ev, new PeerList(value), data));
+			case STC_SELECTED_CHART_RANDOM -> messages.add(new Message<>(ev, new SelectedBMSMessage(value), data));
+			case STC_PLAYERS_SCORE -> messages.add(new Message<>(ev, new ScoreMessage(value), data));
 			default -> {
 				logger.warn("[{}] is ignoring a packet: {}({}), data: {}", this.getFullName(), ev.name(), ev.ordinal(), Arrays.toString(data));
 			}

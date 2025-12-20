@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Server -> Client score message
  */
-public class ScoreMessage {
+public class ScoreMessage implements EqualsWithoutRandomPort<ScoreMessage> {
     private Score score;
     private Address player;
 
@@ -57,5 +57,10 @@ public class ScoreMessage {
 
     public void setPlayer(Address player) {
         this.player = player;
+    }
+
+    @Override
+    public boolean equalsWithoutRandomPort(ScoreMessage obj) {
+        return this.player.equalsWithoutRandomPort(obj.player) && this.score.equals(obj.score);
     }
 }

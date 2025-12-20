@@ -5,7 +5,9 @@ import org.msgpack.core.MessagePack;
 import org.msgpack.value.ArrayValue;
 import org.msgpack.value.Value;
 
-public class Score {
+import java.util.Objects;
+
+public class Score implements Cloneable {
     private int poor;
     private int bad;
     private int good;
@@ -114,4 +116,27 @@ public class Score {
     public void setCurrentNotes(int currentNotes) {
         this.currentNotes = currentNotes;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Score score1 = (Score) o;
+        return poor == score1.poor && bad == score1.bad && good == score1.good && great == score1.great && pGreat == score1.pGreat && maxCombo == score1.maxCombo && score == score1.score && currentNotes == score1.currentNotes;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(poor, bad, good, great, pGreat, maxCombo, score, currentNotes);
+    }
+
+	@Override
+	public Score clone() {
+		try {
+			Score clone = (Score) super.clone();
+			// TODO: copy mutable state here, so the clone can't change the internals of the original
+			return clone;
+		} catch (CloneNotSupportedException e) {
+			throw new AssertionError();
+		}
+	}
 }

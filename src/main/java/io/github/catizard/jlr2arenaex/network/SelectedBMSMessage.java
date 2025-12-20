@@ -5,7 +5,9 @@ import org.msgpack.core.MessagePack;
 import org.msgpack.value.ArrayValue;
 import org.msgpack.value.Value;
 
-public class SelectedBMSMessage {
+import java.util.Objects;
+
+public class SelectedBMSMessage implements EqualsWithoutRandomPort<SelectedBMSMessage> {
     private int randomSeed;
     private String md5;
     private String title;
@@ -112,5 +114,22 @@ public class SelectedBMSMessage {
 
     public void setItemModeEnabled(boolean itemModeEnabled) {
         this.itemModeEnabled = itemModeEnabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        SelectedBMSMessage that = (SelectedBMSMessage) o;
+        return randomSeed == that.randomSeed && option == that.option && gauge == that.gauge && itemModeEnabled == that.itemModeEnabled && Objects.equals(md5, that.md5) && Objects.equals(title, that.title) && Objects.equals(artist, that.artist);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(randomSeed, md5, title, artist, option, gauge, itemModeEnabled);
+    }
+
+    @Override
+    public boolean equalsWithoutRandomPort(SelectedBMSMessage obj) {
+        return equals(obj);
     }
 }

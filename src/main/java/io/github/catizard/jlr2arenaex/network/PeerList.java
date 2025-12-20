@@ -83,10 +83,7 @@ public class PeerList implements EqualsWithoutRandomPort<PeerList> {
         for (Map.Entry<Address, Peer> entry : this.list.entrySet()) {
             boolean matched = false;
             for (Map.Entry<Address, Peer> otherEntry : obj.list.entrySet()) {
-                if (entry.getKey().equalsWithoutRandomPort(otherEntry.getKey())) {
-                    if (entry.getValue().equals(otherEntry.getValue())) {
-                        return false;
-                    }
+                if (entry.getValue().equals(otherEntry.getValue())) {
                     matched = true;
                     break;
                 }
