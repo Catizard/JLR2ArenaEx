@@ -6,6 +6,7 @@ import org.msgpack.value.ArrayValue;
 import org.msgpack.value.Value;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class Peer {
     private String userName;
@@ -117,5 +118,17 @@ public class Peer {
         return this.getScore().getCurrentNotes() == 0
                 ? 0f
                 : this.getExScore() * 50f / this.getScore().getCurrentNotes();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Peer peer = (Peer) o;
+        return ready == peer.ready && option == peer.option && gauge == peer.gauge && Objects.equals(userName, peer.userName) && Objects.equals(selectedMD5, peer.selectedMD5) && Objects.equals(score, peer.score);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userName, selectedMD5, ready, score, option, gauge);
     }
 }

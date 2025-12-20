@@ -6,10 +6,12 @@ import org.msgpack.value.ArrayValue;
 import org.msgpack.value.Value;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class PeerList {
+public class PeerList implements EqualsWithoutRandomPort<PeerList> {
     private Map<Address, Peer> list = new HashMap<>();
     private Address host;
 
@@ -68,5 +70,31 @@ public class PeerList {
 
     public void setHost(Address host) {
         this.host = host;
+    }
+
+    @Override
+    public boolean equalsWithoutRandomPort(PeerList obj) {
+        if (this.list.size() != obj.list.size()) {
+            return false;
+        }
+        if (!this.host.equalsWithoutRandomPort(obj.host)) {
+            return false;
+        }
+        for (Map.Entry<Address, Peer> entry : this.list.entrySet()) {
+            boolean matched = false;
+            for (Map.Entry<Address, Peer> otherEntry : obj.list.entrySet()) {
+                if (entry.getKey().equalsWithoutRandomPort(otherEntry.getKey())) {
+                    if (entry.getValue().equals(otherEntry.getValue())) {
+                        return false;
+                    }
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                return false;
+            }
+        }
+        return true;
     }
 }

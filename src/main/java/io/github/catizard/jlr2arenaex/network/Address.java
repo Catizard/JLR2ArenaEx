@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 
-public class Address implements Serializable {
+public class Address implements Serializable, EqualsWithoutRandomPort<Address> {
     private String host = "";
     private int port = 0;
 
@@ -57,6 +57,14 @@ public class Address implements Serializable {
         return (obj instanceof Address rhs)
                 && rhs.host.equals(this.host)
                 && rhs.port == this.port;
+    }
+
+    @Override
+    public boolean equalsWithoutRandomPort(Address obj) {
+        if (this.equals(obj)) {
+            return true;
+        }
+        return this.host.equals(obj.host);
     }
 
     @Override

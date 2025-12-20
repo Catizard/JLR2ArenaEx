@@ -22,7 +22,7 @@ public class ArenaServer extends WebSocketServer {
 	private volatile boolean started = false;
 	private volatile boolean autoRotateHost = false;
 	private Consumer<Exception> exceptionHandler;
-	public static ServerState state = new ServerState();
+	public ServerState state = new ServerState();
 
 	public ArenaServer() {
 		this(2222);
